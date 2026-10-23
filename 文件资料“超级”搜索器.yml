@@ -1,0 +1,257 @@
+app:
+  description: 可以帮你自动提取文件中的关键词和主要内容形容这份文件这样即使记不住文件名称只需记住大概内容即可从海量文件中找到该文件
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: 文件资料“超级”搜索器
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:1.0.7@f36c3761167b3af0bfb4975b728fe3cd126342d076e1ec5359e6d4f92557d3d4
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.2.23@f500332838ed670d0962a4f727618a2eb7e27a453ea56e72a28731f5f383ab72
+    version: null
+kind: app
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        knowledge_file_size_limit: 15
+        single_chunk_attachment_limit: 10
+        skill_file_size_limit: 50
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1792773597765-source-1792773765877-target
+      source: '1792773597765'
+      sourceHandle: source
+      target: '1792773765877'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1792773765877-source-llm-target
+      source: '1792773765877'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: llm-source-answer-target
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 72
+      id: '1792773597765'
+      position:
+        x: 90.07345279117851
+        y: 261
+      positionAbsolute:
+        x: 90.07345279117851
+        y: 261
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1792773765877'
+          - result
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gpt-5
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 982e1160-4e67-499d-9adc-c5be50611b53
+          role: system
+          text: '你的任务是根据用户输入判断最匹配的文件名。
+
+            请严格遵守以下规则：
+
+            你的回答必须不仅包含一个文件名（不含任何解释、标点符号、前缀或后缀）。
+
+            文件名必须与知识库中已知的文件完全一致，例如：“生涯发展报告”。
+
+            绝对不要输出“生涯发展报告.pdf”，不要带 .pdf 后缀。
+
+            不要输出任何类似“匹配的文件是：”的话。
+
+            【上下文】：
+
+            {{#context#}}'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: llm
+      position:
+        x: 499.40015358901155
+        y: 229.17092007874555
+      positionAbsolute:
+        x: 499.40015358901155
+        y: 229.17092007874555
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: true
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 101
+      id: answer
+      position:
+        x: 793.4857339765679
+        y: 323.44141971054444
+      positionAbsolute:
+        x: 793.4857339765679
+        y: 323.44141971054444
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        dataset_ids:
+        - 896aHaw1lyLyN9Yek8UJ7wA0B3enbtyWekEfU1v5zeBQ8Y4dU5WsG/h8bYePIHBB
+        metadata_filtering_conditions:
+          conditions:
+          - comparison_operator: is
+            id: 69c3e5ee-f2d3-4016-9aa0-9ce5226bcda4
+            metadata_id: bacebb10-5668-4cdd-a1a7-fdf4e8ab42b5
+            name: file_name
+            value: '{{#llm.text#}}'
+          logical_operator: and
+        metadata_filtering_mode: manual
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: qwen3-rerank
+            provider: langgenius/tongyi/tongyi
+          top_k: 4
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1792773597765'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1792773765877'
+      position:
+        x: 326.2244029775477
+        y: 375.46144238925376
+      positionAbsolute:
+        x: 326.2244029775477
+        y: 375.46144238925376
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    viewport:
+      x: 34.0861699171262
+      y: 102.73812454158815
+      zoom: 0.9008546714413024
+  rag_pipeline_variables: []
